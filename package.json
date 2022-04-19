@@ -1,0 +1,22 @@
+{
+  "name": "jms-smpp",
+  "version": "1.0.0",
+  "description": "JMS SMPP module",
+  "main": "smpp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "jms",
+    "smpp"
+  ],
+  "devDependencies": {
+    "jms-engine": "github:0LEG0/jms-engine"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2",
+    "smpp": "^0.6.0-rc.3"
+  },
+  "author": "0LEG0 <a.i.s@gmx.com>",
+  "license": "Apache-2.0"
+}
