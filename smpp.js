@@ -1,7 +1,7 @@
 /**
  * JMS SMPP module
  * @author "0LEG0 <a.i.s@gmx.com>"
- * @version 1.0.0
+ * @version 1.0.1
  * 
  * Emit and handle smpp.* messages:
  * smpp.connect
@@ -647,12 +647,15 @@ async function smppHandler(message) {
 
 async function commandHandler(message) {
 	if (message.name === "jengine.status") {
-		message.result += `\nmodule:smpp;listeners:${listeners.size};connections:${connections.size};status:on`;
+		message.result = `listeners:${listeners.size};connections:${connections.size};status:on`;
 		return message;
 	}
 	if (message.name === "jengine.command") {
 		let line = message.get("line");
 		if (typeof line !== "string") return;
+		if (line === "help") {
+			return (message.result ? message.result : "") + "\nsmpp listeners|connections";
+		}
 		let arg = line.split(" ");
 		if (arg[0] !== "smpp") return;
 		message.handled = true;
@@ -668,7 +671,7 @@ async function commandHandler(message) {
 				});
 				return message;
 			default:
-				return "Usage: smpp listeners|connections";
+				return "smpp listeners|connections";
 		}
 	}
 }
