@@ -22,7 +22,7 @@ const smpp = require("smpp");
 const listeners = new Map();
 const connections = new Map();
 const OPTIONS = { listener: {}, connection: {} };
-const CONF_FILE = process.env.PWD + "/conf/.jms-smpp.js";
+const CONF_FILE = process.env.PWD + "/conf/.smpp.js";
 const DEFAULT = {
 	listener: {
 		enabled: false,
