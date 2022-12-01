@@ -22,7 +22,7 @@ const smpp = require("smpp");
 const listeners = new Map();
 const connections = new Map();
 const OPTIONS = { listener: {}, connection: {} };
-const CONF_FILE = process.env.PWD + "/conf/.smpp.js";
+const CONF_FILE = process.env.JMS_PATH + "/conf/.smpp.js";
 const DEFAULT = {
 	listener: {
 		enabled: false,
@@ -47,7 +47,9 @@ const DEFAULT = {
 async function load() {
 	// fs.accessSync(CONF_FILE, fs.constants.F_OK);
 	// let config = ini.parse(fs.readFileSync(CONF_FILE, "utf-8"));
-	let config = require(CONF_FILE);
+	try {
+		let config = require(CONF_FILE);
+	
 	if (typeof config.listener !== "object" || config.listener == null) config.listener = {};
 	if (typeof config.connection !== "object" || config.connection == null) config.connection = {};
 
@@ -65,6 +67,9 @@ async function load() {
 			...config.connection[key],
 		};
 		if (OPTIONS.connection[key].restart) OPTIONS.connection[key].restart = Number.parseInt(OPTIONS.connection[key].restart);
+	}
+	} catch(err) {
+		console.error("Load config error!", err);
 	}
 	return OPTIONS;
 }
