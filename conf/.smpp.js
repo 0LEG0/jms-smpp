@@ -25,5 +25,11 @@ module.exports = {
             password: "demo0pass",
             restart: 5000
         }
+    },
+    tlv: {
+        mccmnc: {
+            id: 0x1416,
+            type: "int32"
+        }
     }
 }

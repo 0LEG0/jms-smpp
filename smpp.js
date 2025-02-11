@@ -1,7 +1,7 @@
 /**
  * JMS SMPP module
  * @author "0LEG0 <a.i.s@gmx.com>"
- * @version 1.0.1
+ * @version 1.1.0
  * 
  * Emit and handle smpp.* messages:
  * smpp.connect
@@ -50,8 +50,6 @@ const DEFAULT = {
 };
 
 async function load() {
-	// fs.accessSync(CONF_FILE, fs.constants.F_OK);
-	// let config = ini.parse(fs.readFileSync(CONF_FILE, "utf-8"));
 	try {
 		let config = require(CONF_FILE);
 	
@@ -80,6 +78,7 @@ async function load() {
 			...DEFAULT.tlv,
 			...config.tlv[key],
 		};
+		// remove if wrong type
 		if (smpp.types.tlv[OPTIONS.tlv[key].type]) {
 			OPTIONS.tlv[key].type = smpp.types.tlv[OPTIONS.tlv[key].type];
 		} else {
