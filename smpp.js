@@ -21,7 +21,7 @@ const jengine = connect({trackname: "smpp", selfdispatch: true});
 const smpp = require("smpp");
 const listeners = new Map();
 const connections = new Map();
-const OPTIONS = { listener: {}, connection: {} };
+const OPTIONS = { listener: {}, connection: {}, tlv: {} };
 const CONF_FILE = process.env.JMS_PATH + "/conf/.smpp.js";
 const DEFAULT = {
 	listener: {
@@ -42,6 +42,11 @@ const DEFAULT = {
 		restart: 0, //restarts after ms
 		connectTimeout: 10000
 	},
+
+	tlv: {
+		enabled: true,
+		type: "string"
+	}
 };
 
 async function load() {
@@ -52,6 +57,7 @@ async function load() {
 	
 	if (typeof config.listener !== "object" || config.listener == null) config.listener = {};
 	if (typeof config.connection !== "object" || config.connection == null) config.connection = {};
+	if (typeof config.tlv !== "object" || config.tlv == null) config.tlv = {};
 
 	// Load listeners
 	for (let key in config.listener) {
@@ -68,6 +74,18 @@ async function load() {
 		};
 		if (OPTIONS.connection[key].restart) OPTIONS.connection[key].restart = Number.parseInt(OPTIONS.connection[key].restart);
 	}
+	// Load tlv
+	for (let key in config.tlv) {
+		OPTIONS.tlv[key] = {
+			...DEFAULT.tlv,
+			...config.tlv[key],
+		};
+		if (smpp.types.tlv[OPTIONS.tlv[key].type]) {
+			OPTIONS.tlv[key].type = smpp.types.tlv[OPTIONS.tlv[key].type];
+		} else {
+			delete OPTIONS.tlv[key];
+		}
+	}
 	} catch(err) {
 		console.error("Load config error!", err);
 	}
@@ -75,6 +93,11 @@ async function load() {
 }
 
 async function start() {
+	// Setup TLV
+	for (let key in OPTIONS.tlv) {
+		if (!OPTIONS.tlv[key].enabled) continue;
+		smpp.addTLV(key, OPTIONS.tlv[key]);
+	}
 	// Start listeners
 	for (let key in OPTIONS.listener) {
 		if (!OPTIONS.listener[key].enabled) continue;
